@@ -10,6 +10,9 @@ namespace eWellman_financial {
 		public static void RegisterRoutes(RouteCollection routes) {
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+			//Enable routing from controller
+			routes.MapMvcAttributeRoutes();
+
 			routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",

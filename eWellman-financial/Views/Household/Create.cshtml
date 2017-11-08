@@ -1,0 +1,118 @@
+﻿@model eWellman_financial.Models.Class_Models.Household
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm("Create","Household", FormMethod.Post, new { id = "createForm" })){
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Create a new Household</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label for="title" class="form-control-label">House Name</label>
+			<div class="row">
+				<div class="col-md-3" id="nameDiv">
+					@Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control", style = "padding-right:20px;" } })
+					@Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger", id = "errorMsg" })
+				</div>
+			</div>
+        </div>
+
+        <div class="form-group">
+			<label for="description" class="form-control-label">House Description</label>
+            <div class="col-md-6">
+                @Html.TextArea("Description", null, new { @class = "form-control", @rows = "5", @columns = "20" })
+                @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+		<div class="form-group">
+			<label for="housePassword" class="form-control-label">House Password - Will be required for others to join the house</label>
+			<div class="col-md-3">
+				@Html.EditorFor(model => model.housePassword, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.housePassword, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id="CreateFormSubmit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<!--House creation submission-->
+<script>
+	$(function () {
+		$("#createForm").submit(function (event) {
+		event.preventDefault(); // Prevent the form from submitting via the browser
+		var form = $(this);
+		$.ajax({
+		  type: form.attr('method'),
+		  url: form.attr('action'),
+		  data: form.serialize(),
+		  success: function (response) {
+			  if (response.success) {
+				  if (response.isRedirect) {
+					  window.location.href = response.redirectUrl;
+				  }
+			  }
+			  else {
+				  $("#errorMsg").text(response.errorMsg);
+			  }
+		  }
+		}).done(function(data) {
+		  // Optionally alert the user of success here...
+		}).fail(function (response) {
+		  // Optionally alert the user of an error here...
+		});
+	  });
+	});
+</script>
+<!-- House name validation -->
+<script>
+	$(function () {
+		$("#title").keyup(function (event) {
+			if ($("#title").val().length <= 5) {
+				$("#nameStatus").remove();
+				return;
+			}
+			event.preventDefault(); // Prevent the form from submitting via the browser
+			var title = $("#title").val();
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("NameCheck", "Household", null)",
+				data: { title: title },
+				success: function (response) {
+					$("#nameStatus").remove();
+					if (response != null && response.success) {
+						$("#nameDiv").after("<div class='col-md-1' id='nameStatus'><i class='fa fa-2x fa-check-circle nameStatusSuccess'></i></div>");
+					}
+					else {
+						$("#nameDiv").after("<div class='col-md-1' id='nameStatus'><i class='fa fa-2x fa-times-circle nameStatusFail'></i></div>");
+					}
+				}
+			});
+			//.done(function (data) {
+			//	$("#nameCheckResult").text("Script done");
+			//}).fail(function (data) {
+			//	$("#nameCheckResult").text("Script fail");
+			//	// Optionally alert the user of an error here...
+			//});
+		});
+	});
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

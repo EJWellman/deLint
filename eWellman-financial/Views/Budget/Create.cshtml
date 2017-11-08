@@ -1,0 +1,182 @@
+﻿@model eWellman_financial.Models.Class_Models.Budget
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+<div id="createDiv">
+	<div id="budgetDiv">
+		@using (Html.BeginForm("Create", "Budget", FormMethod.Post)) {
+			@Html.AntiForgeryToken();
+			<div class="form-horizontal">
+				@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+				<div class="form-group">
+					@Html.LabelFor(model => model.title, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.durationId, "durationId", htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-6">
+						<select id="durationId" name="durationId" class="form-control">
+
+						</select>
+						@Html.ValidationMessageFor(model => model.durationId, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="Create" class="btn btn-default" />
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+		@Html.Partial("~/Views/Income/_Create.cshtml")
+		@Html.Partial("~/Views/Expenses/_Create.cshtml")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+	$(function () {
+		$(document).ready(function (event) {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("JsonSelect", "Budget", null)",
+				dataType: "json",
+				success: function (response) {
+					var durations = response;
+					$.each(durations, function (id, info) {
+						$("<option>").val(info.id).text(info.name).appendTo($("#createDiv").find($("#durationId")));
+						$("<option>").val(info.id).text(info.name).appendTo($("#incomeDiv").find($("#frequencyId")));
+						$("<option>").val(info.id).text(info.name).appendTo($("#expenseDiv").find($("#frequencyId2")));
+					});
+				}
+			}).done(function (data) {
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>
+<script>
+	$(function () {
+		$(document).ready(function (event) {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("JsonSelect", "Income", null)",
+				dataType: "json",
+				success: function (response) {
+					var budgets = response.budgets;
+					$.each(budgets, function (id, info) {
+						$("<option>").val(info.id).text(info.name).appendTo($("#incomeDiv").find($("#budgetId")));
+						$("<option>").val(info.id).text(info.name).appendTo($("#expenseDiv").find($("#budgetId2")));
+					});
+				}
+			}).done(function (data) {
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>
+
+@*<script>
+	(function ($) {
+		$.fn.BudgetLoad = function (event) {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("JsonSelect", "Income", null)",
+				dataType: "json",
+				success: function (response) {
+					var durations = response;
+					$.each(budgets, function (id, info) {
+						$("<option>").val(info.id).text(info.name).appendTo($("#budgetId"))
+					});
+				}
+			}).done(function (data) {
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		};
+	});
+</script>*@
+<script>
+	$(function () {
+		$("#createDiv > div > form").submit(function (event) {
+			event.preventDefault(); // Prevent the form from submitting via the browser
+			var form = $(this);
+			$.ajax({
+				type: form.attr('method'),
+				url: form.attr('action'),
+				data: form.serialize(),
+				success: function (response) {
+					//$(form).find("input[type!=submit]").val('');
+					if (response.success) {
+						$.toast({
+							text: response.text, // Text that is to be shown in the toast
+							icon: 'success', // Type of toast icon
+							showHideTransition: 'slide', // fade, slide or plain
+							allowToastClose: true, // Boolean value true or false
+							hideAfter: 3500, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+							stack: false, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+							position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+							textAlign: 'left',  // Text alignment i.e. left, right or center
+							loader: true,  // Whether to show loader or not. True by default
+							loaderBg: '#9EC600',  // Background color of the toast loader
+							beforeShow: function () { }, // will be triggered before the toast is shown
+							afterShown: function () { }, // will be triggered after the toat has been shown
+							beforeHide: function () { }, // will be triggered before the toast gets hidden
+							afterHidden: function () { }  // will be triggered after the toast has been hidden
+						});
+					}
+					else {
+						$.toast({
+							text: response.text, // Text that is to be shown in the toast
+							icon: 'warning', // Type of toast icon
+							showHideTransition: 'slide', // fade, slide or plain
+							allowToastClose: true, // Boolean value true or false
+							hideAfter: 3500, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+							stack: false, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+							position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+							textAlign: 'left',  // Text alignment i.e. left, right or center
+							loader: true,  // Whether to show loader or not. True by default
+							loaderBg: '#d95351',  // Background color of the toast loader
+							beforeShow: function () { }, // will be triggered before the toast is shown
+							afterShown: function () { }, // will be triggered after the toat has been shown
+							beforeHide: function () { }, // will be triggered before the toast gets hidden
+							afterHidden: function () { }  // will be triggered after the toast has been hidden
+						});
+					}
+					$("#atfArea").load('@Url.Action("_AFTPartial", "Manage", null)');
+					if (response.step == 1){
+						$("#budgetDiv").remove();
+						$("#incomeDiv").show();
+						$("<option>").val(response.id).text(response.title).appendTo($("#incomeDiv").find($("#budgetId")));
+						$("<option>").val(response.id).text(response.title).appendTo($("#expenseDiv").find($("#budgetId2")));
+						//BudgetLoad();
+					}
+					if (response.step == 2) {
+						$("#incomeDiv").remove();
+						$("#expenseDiv").show();
+					}
+					if (response.step == 3) {
+						window.location.href = response.redirectUrl;
+					}
+				}
+			}).done(function (data) {
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>

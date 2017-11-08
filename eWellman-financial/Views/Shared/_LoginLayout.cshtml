@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewBag.Title - DeLint</title>
+	@Styles.Render("~/Content/css")
+</head>
+<body class="bg-dark body-bg">
+	<div class="container">
+		<div class="card card-login mx-auto mt-0">
+			<div class="card-header text-center">@ViewBag.Title</div>
+			<div class="card-body">
+				<!--Page contents-->
+				<div>
+					@RenderBody()
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,89 @@
+﻿@model eWellman_financial.Models.Class_Models.Household
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+	<div class="row">
+		<h4 class="mr-auto ml-3">@Model.title</h4>
+		@using (Html.BeginForm("HouseInvite", "Household", FormMethod.Post, new { @class = "col-md-4 input-group ml-auto", role = "form", id = "inviteForm" })) {
+			@Html.TextBox("userEmail", null, new { @class = "form-control", placeholder = "Enter email to send invite." })
+			<button id="inviteBtn" class="btn btn-primary input-group-addon" type="submit">Invite Housemate</button>
+		}		
+	</div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+        <dt>
+            Members of the Household
+        </dt>
+		@foreach (var m in Model.members) {
+        <dd>
+            @m.fullName
+        </dd>
+		}
+
+    </dl>
+</div>
+<script>
+	$(function () {
+		$("form").submit(function (event) {
+			event.preventDefault(); // Prevent the form from submitting via the browser
+			var form = $(this);
+			$.ajax({
+				type: form.attr('method'),
+				url: form.attr('action'),
+				data: form.serialize(),
+				success: function (response) {
+					$(form).find("input[type!=submit]").val('');
+					if (response.success) {
+						$.toast({
+							text: response.text, // Text that is to be shown in the toast
+							icon: 'success', // Type of toast icon
+							showHideTransition: 'slide', // fade, slide or plain
+							allowToastClose: true, // Boolean value true or false
+							hideAfter: 3500, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+							stack: false, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+							position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+							textAlign: 'left',  // Text alignment i.e. left, right or center
+							loader: true,  // Whether to show loader or not. True by default
+							loaderBg: '#9EC600',  // Background color of the toast loader
+							beforeShow: function () { }, // will be triggered before the toast is shown
+							afterShown: function () { }, // will be triggered after the toat has been shown
+							beforeHide: function () { }, // will be triggered before the toast gets hidden
+							afterHidden: function () { }  // will be triggered after the toast has been hidden
+						});
+					}
+					else {
+						$.toast({
+							text: response.text, // Text that is to be shown in the toast
+							icon: 'warning', // Type of toast icon
+							showHideTransition: 'slide', // fade, slide or plain
+							allowToastClose: true, // Boolean value true or false
+							hideAfter: 3500, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+							stack: false, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+							position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+							textAlign: 'left',  // Text alignment i.e. left, right or center
+							loader: true,  // Whether to show loader or not. True by default
+							loaderBg: '#d95351',  // Background color of the toast loader
+							beforeShow: function () { }, // will be triggered before the toast is shown
+							afterShown: function () { }, // will be triggered after the toat has been shown
+							beforeHide: function () { }, // will be triggered before the toast gets hidden
+							afterHidden: function () { }  // will be triggered after the toast has been hidden
+						});
+					}
+				}
+			}).done(function (data) {
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>

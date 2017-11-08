@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using eWellman_financial.Models;
+using eWellman_financial.Models.View_Models;
 
 namespace eWellman_financial.Controllers
 {
@@ -54,7 +55,7 @@ namespace eWellman_financial.Controllers
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
-            ViewBag.StatusMessage =
+			ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
@@ -64,7 +65,7 @@ namespace eWellman_financial.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
+            IndexViewModel model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
@@ -224,11 +225,9 @@ namespace eWellman_financial.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
+        public async Task<ActionResult> ChangePassword([Bind(Include = "OldPassword,NewPassword,ConfirmPassword")]ChangePasswordViewModel model){
+            if (!ModelState.IsValid) {
+				return Json(new { success = false, text = "Passwords don't match, please try again." }, JsonRequestBehavior.AllowGet);
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
             if (result.Succeeded)
@@ -238,11 +237,11 @@ namespace eWellman_financial.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
-            }
+				return Json(new { success = true, text = "Password Updated!"}, JsonRequestBehavior.AllowGet);
+			}
             AddErrors(result);
-            return View(model);
-        }
+			return Json(new { success = false, text = "Passwords don't match, please try again." }, JsonRequestBehavior.AllowGet);
+		}
 
         //
         // GET: /Manage/SetPassword
@@ -321,6 +320,41 @@ namespace eWellman_financial.Controllers
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
         }
+
+		//Custom Controllers
+		// POST: Email/Username Change
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> ChangeEmail([Bind(Include = "oldEmail,newEmail,confirmEmail")]ChangeEmailViewModel model) {
+			if (!ModelState.IsValid) {
+				return Json(new { success = false, text = "Entered emails don't match." }, JsonRequestBehavior.AllowGet);
+			}
+			try {
+				if (UserManager.Users.Where(x => x.UserName == model.newEmail).FirstOrDefault() == null) {
+					try {
+						var user = UserManager.Users.FirstOrDefault(u => u.Email == model.oldEmail);
+						if (user.Id == UserManager.FindById(User.Identity.GetUserId()).Id) {
+							user.UserName = model.newEmail;
+							user.Email = model.newEmail;
+							await UserManager.UpdateAsync(user);
+							return Json(new { success = true, text = "Email Updated!" }, JsonRequestBehavior.AllowGet);
+						}
+					}
+					catch (Exception ex) {
+						return Json(new { success = false, text = "Entered email doesn't exist!" }, JsonRequestBehavior.AllowGet);
+					}
+					throw new HttpException(500, "Please enter your username.");
+				}
+			}
+			catch (Exception ex) {
+				return Json(new { success = false, text = "Entered email doesn't exist!" }, JsonRequestBehavior.AllowGet);
+			}
+			throw new HttpException(500, "Please select a different username.");
+		}
+		
+		public ActionResult _AFTPartial() {
+			return PartialView();
+		}
 
         protected override void Dispose(bool disposing)
         {

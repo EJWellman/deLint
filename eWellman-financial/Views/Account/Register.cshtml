@@ -1,41 +1,60 @@
-﻿@model eWellman_financial.Models.RegisterViewModel
+﻿@model eWellman_financial.Models.View_Models.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+	ViewBag.Title = "Register";
+	Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
-
-<h2>@ViewBag.Title.</h2>
 
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary("", new { @class = "text-danger" })
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			@Html.Label("First Name", new { @class = "control-label" })
+			@Html.TextBox("firstName", null, new { @class = "form-control", placeholder = "First Name" })
+		</div>
+		<div class="form-group col-md-6">
+			@Html.Label("Last Name", new { @class = "control-label" })
+			@Html.TextBox("lastName", null, new { @class = "form-control", placeholder = "Last Name" })
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.Label("Email", new { @class = "control-label" })
+		@Html.TextBox("Email", null, new { @class = "form-control", placeholder = "Enter email" })
+	</div>
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			@Html.Label("Password", new { @class = "control-label" })
+			@Html.Password("Password", null, new { @class = "form-control", placeholder = "Password" })
+		</div>
+		<div class="form-group col-md-6">
+			@Html.Label("Confirm Password", new { @class = "control-label" })
+			@Html.Password("ConfirmPassword", null, new { @class = "form-control", placeholder = "Confirm Password" })
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.Label("Time Zone", new { @class = "control-label" })
+		@Html.DropDownList("timeZone", new SelectList(TimeZoneInfo.GetSystemTimeZones(), "Id", "DisplayName"), new { @class = "form-control" })
+	</div>
+	<hr/>
+	<div class="form-group">
+		<input type="submit" class="btn btn-primary btn-block" value="Register" />
+	</div>
+
+	<div class="text-center">
+		<p>
+			@Html.ActionLink("Login to Existing Account", "Login")
+		</p>
+		@* Enable this once you have account confirmation enabled for password reset functionality*@
+		<p>
+			@Html.ActionLink("Forgot your password?", "ForgotPassword")
+		</p>
+	</div>
 }
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(".card-login").css("max-width", "45rem")
+	</script>
 }

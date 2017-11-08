@@ -1,0 +1,136 @@
+﻿@model eWellman_financial.Models.Class_Models.Transaction
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Transaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.bankAcct.title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.bankAcct.title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.catagory.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.catagory.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.type.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.type.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.amount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.amount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reconciledAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reconciledAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reconciledDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reconciledDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reconciled)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reconciled)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiptUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiptUrl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiptName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiptName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiptType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiptType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.creatorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.creatorId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.updaterId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.updaterId)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

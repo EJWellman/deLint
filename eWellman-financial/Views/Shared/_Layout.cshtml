@@ -1,44 +1,239 @@
 ﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
+<html lang="en">
+<head>	
+	@using eWellman_financial.Models.Helpers;
+	@using eWellman_financial.Models.View_Models
+	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - DeLint</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-
+    	@Scripts.Render("~/bundles/modernizr")
+		@Scripts.Render("~/bundles/jquery")
+	<link href="~/Content/datatables.css" rel="stylesheet" />
+	<script src="~/Scripts/datatables.min.js"></script>
+	<script src="~/Scripts/magnific.js"></script>
+	<link href="~/Content/magnific-popup.css" rel="stylesheet" />
+	<link rel="icon"
+		  type="image/x-icon"
+		  href="~/favicon.ico" />
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<!--Permanent AntiForgeryToken -- Gets refreshed with Ajax-->
+	<div id="atfArea">
+		@Html.Partial("~/Views/Manage/_AFTPartial.cshtml")
+	</div>
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<a class="navbar-brand" href="@Url.Action("Index","Home", null)">DeLint</a>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<!--Side Nav-->
+			<ul class="navbar-nav navbar-sidenav" id="sideNav">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="@Url.Action("Index","Home",null)">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text">Dashboard</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Household">
+					<a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#sideNav">
+						<i class="fa fa-fw fa-home"></i>
+						<span class="nav-link-text">Household</span>
+					</a>
+					<ul class="sidenav-second-level collapse" id="collapseComponents">
+						@if (User.Identity.IsInAHousehold()) {
+							<li>
+								<a href="@Url.Action("Details", "Household", new { id = User.Identity.GetHouseId() })">Household Dashboard</a>
+							</li>
+							<li>
+								<a href="@Url.Action("Index", "BankAccts", null)">Household Accounts</a>
+							</li>
+							<li>
+								<a href="@Url.Action("Index", "Budget", null)">Household Budgets</a>
+							</li>
+						}
+						@if (!User.Identity.IsInAHousehold()) {
+							<li>
+								<a href="@Url.Action("Create", "Household", null)">Create Household</a>
+							</li>
+							<li>
+								<a href="@Url.Action("Join", "Household", null)">Join Household</a>
+							</li>
+						}
+					</ul>
+				</li>
+			</ul>
+			<!-- Toggler for sidenav-->
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+					<a class="nav-link text-center" id="sidenavToggler">
+						<i class="fa fa-fw fa-angle-left"></i>
+					</a>
+				</li>
+			</ul>
+			<!--Top Nav-->
+			@if (User.Identity.IsInAHousehold()) {
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link text-light" href="#" data-toggle="modal" data-target="#transactionModal">
+							<i class="fa fa-fw fa-paperclip"></i>New Transaction
+						</a>
+					</li>
+				</ul>
+			}
+			<ul class="navbar-nav ml-auto">
+				<!--Message Dropdown-->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-fw fa-envelope"></i>
+						<span class="d-lg-none">
+							Messages
+							<span class="badge badge-pill badge-primary">12 New</span>
+						</span>
+						<span class="indicator text-primary d-none d-lg-block">
+							<i class="fa fa-fw fa-circle"></i>
+						</span>
+					</a>
+					<div class="dropdown-menu" aria-labelledby="messagesDropdown">
+						<h6 class="dropdown-header">New Messages:</h6>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">
+							<strong>David Miller</strong>
+							<span class="small float-right text-muted">11:21 AM</span>
+							<div class="dropdown-message small">Hey there! This new version of SB Admin is pretty awesome! These messages clip off when they reach the end of the box so they don't overflow over to the sides!</div>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">
+							<strong>Jane Smith</strong>
+							<span class="small float-right text-muted">11:21 AM</span>
+							<div class="dropdown-message small">I was wondering if you could meet for an appointment at 3:00 instead of 4:00. Thanks!</div>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">
+							<strong>John Doe</strong>
+							<span class="small float-right text-muted">11:21 AM</span>
+							<div class="dropdown-message small">I've sent the final files over to you for review. When you're able to sign off of them let me know and we can discuss distribution.</div>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item small" href="#">View all messages</a>
+					</div>
+				</li>
+				<!--Account Dropdown-->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle mr-lg-2" id="accountDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-fw fa-bars"></i>
+						@User.GetFullName()
+					</a>
+					<div class="dropdown-menu" aria-labelledby="accountDropdown">
+						<a class="dropdown-item" href="@Url.Action("Index","Manage",null)">
+							<span class="text-primary">
+								<strong>
+									<i class="fa fa-wrench fa-fw"></i>Manage Account
+								</strong>
+							</span>
+						</a>
+					</div>
+				</li>
+				<!--Search Bar-->
+				<!--<li class="nav-item">
+					<form class="form-inline my-2 my-lg-0 mr-lg-2">
+						<div class="input-group">
+							<input class="form-control" type="text" placeholder="Search for...">
+							<span class="input-group-btn">
+								<button class="btn btn-primary" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</div>
+					</form>
+				</li>-->
+				<!--Logout-->
+					<li class="nav-item">
+						<a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+							<i class="fa fa-fw fa-sign-out"></i>Logout
+						</a>
+					</li>
+				
+			</ul>
+		</div>
+	</nav>
+	<!-- Primary Body Content-->
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<!-- Breadcrumbs -- May implement later-->
+			<!--<ol class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a href="index.html">Dashboard</a>
+				</li>
+				<li class="breadcrumb-item active">@ViewBag.Title</li>
+			</ol>-->
+			@RenderBody()
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer class="sticky-footer">
+		<div class="container">
+			<div class="text-center col-md-3 ml-auto mr-auto">
+				<small>Copyright © Eric Wellman 2017</small>
+			</div>
+		</div>
+	</footer>
+	<!-- Scroll to Top Button-->
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fa fa-angle-up"></i>
+	</a>
+	<!-- Logout Modal-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="logoutModalLabel">Are you sure you want to log out?</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<i class="fa fa-fw fa-window-close-o"></i>
+					</button>
+				</div>
+				<div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+					@using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" })) {
+						@Html.AntiForgeryToken()
+						<a class="btn btn-danger" href="javascript:document.getElementById('logoutForm').submit()">
+							<i class="fa fa-fw fa-sign-out"></i>Logout
+						</a>
+					}
+				</div>
+			</div>
+		</div>
+	</div>	
+	<!-- Transaction Modal-->
+	@if (User.Identity.IsInAHousehold()) {
+		<div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="transactionModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="transactionModalLabel">New Transaction</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<i class="fa fa-fw fa-window-close-o"></i>
+						</button>
+					</div>
+					<!--Modal Content-->
+					<div class="modal-body" id="transactionModalBody">
+						@Html.Partial("~/Views/Transaction/_TransactionPartial.cshtml", new TransactionCreateViewModel())
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+	<script>
+		$('#fileInput2').change(function (e) {
+			var filename = e.target.files[0].name;
+			$("#fileName2").attr('data-after', filename);
+			$(this).next(".custom-file-control").attr("data-after", filename.value);
+		});
+	</script>
 </body>
 </html>

@@ -1,0 +1,260 @@
+﻿@model eWellman_financial.Models.View_Models.TransactionCreateViewModel
+@using (Html.BeginForm("Create", "Transaction", FormMethod.Post, new { enctype = "Multipart/form-data", id = "transactionForm" })) {
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		<div class="form-group">
+			@Html.Label("description", "Title - Brief Description", htmlAttributes: new { @class = "control-label" })
+			<div class="col-md-11">
+				@Html.Editor("description", null, new { htmlAttributes = new { @class = "form-control grabThis", @type = "text" } })
+				@Html.ValidationMessage("description", "", new { @class = "text-danger" })
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col-md-5">
+			@Html.Label("amount", "Amount", htmlAttributes: new { @class = "control-label col-md-2", style = "margin-left:-15px;" })
+				<div class="input-group" style="margin-left:15px;">
+					<span class="input-group-addon">$</span>
+					<input type="number" value="0.00" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control grabThis" id="amount" name="amount" />
+				</div>
+			</div>
+			<div class="col-md-5">
+				@Html.Label("date", "Date", htmlAttributes: new { @class = "control-label", style = "margin-left:15px;" })
+				@Html.Editor("date", new { htmlAttributes = new { @class = "form-control grabThis", type = "date", style = "margin-left:30px;" } })
+				@Html.ValidationMessage("date", "", new { @class = "text-danger" })
+			</div>
+		</div>
+		<div class="form-group mt-3">
+			@Html.Label("fileInput", "Select Receipt Image", new { @class = "control-label"})
+			<div class="col-md-10">
+				<label class="custom-file">
+					<input type="file" name="fileInput2" id="fileInput2" class="custom-file-input">
+					<span id="fileName2" class="custom-file-control" data-after="Choose File..."></span>
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-5">
+				<div class="form-group">
+					<div class="col-md-12">
+						<label class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input grabThis" id="recurring2" name="recurring2">
+							<span class="custom-control-indicator"></span>
+							<span class="custom-control-description">Recurring Transaction?</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group" style="display:none" id="freqDiv2">
+					@Html.Label("frequency", "How often will this transaction occur?", htmlAttributes: new { @class = "control-label" })
+					<div class="col-md-12">
+						<select id="frequency2" name="frequency2" class="form-control grabThis">
+							<!--Gets filled by Ajax-->
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.Label("bankAcctId", "Bank Account Used", htmlAttributes: new { @class = "control-label" })
+					<div class="col-md-12">
+						<select id="bankAcctId2" name="bankAcctId2" class="form-control grabThis">
+							<!--Gets filled by Ajax-->
+						</select>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					@Html.Label("budgetId", "Budget Effected", htmlAttributes: new { @class = "control-label" })
+					<div class="col-md-12">
+						<select id="budgetId2" name="budgetId2" class="form-control grabThis">
+							<!--Gets filled by Ajax-->
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.Label("transactionCatagoryId", "Transaction Catagory", htmlAttributes: new { @class = "control-label" })
+					<div class="col-md-12">
+						<select id="transactionCatagoryId2" name="transactionCatagoryId2" class="form-control grabThis">
+							<!--Gets filled by Ajax-->
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.Label("transactionTypeId", "Credit or Debit?", htmlAttributes: new { @class = "control-label" })
+					<div class="col-md-12">
+						<select id="transactionTypeId2" name="transactionTypeId2" class="form-control grabThis">
+							<!--Gets filled by Ajax-->
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 ml-auto" id="overdraftStatusArea" style="height:48px; overflow:hidden;">
+
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="Create" class="btn btn-default" />
+			</div>
+		</div>
+	</div>
+}
+
+
+<script>
+	$(function () {
+		$(document).ready(function (event) {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("JsonSelect", "Transaction",null)",
+				dataType: "json",
+				success: function (response) {
+					var accts = response.bankAccount;
+					var cats = response.transactionCatagory;
+					var types = response.transactionType;
+					var budgets = response.budget;
+					var frequencies = response.frequency;
+					$.each(frequencies, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#frequency2"))
+					});
+					$.each(accts, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#bankAcctId2"))
+					});
+					$.each(cats, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionCatagoryId2"))
+					});
+					$.each(types, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionTypeId2"))
+					});
+					$.each(budgets, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#budgetId2"))
+					});
+				}
+			}).done(function (data) {
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>
+<script>
+	$(function () {
+		$("#recurring2").change(function (e) {
+			$("#freqDiv2").toggle();
+		});
+	});
+</script>
+<script>
+	$(function () {
+		$("#transactionForm").submit(function (event) {
+			event.preventDefault(); // Prevent the form from submitting via the browser
+			var form = $(this);
+			var fdata = new FormData();
+
+			$('input[name="fileInput"]').each(function (a, b) {
+				var fileInput = $('input[name="fileInput"]')[a];
+				if (fileInput.files.length > 0) {
+					var file = fileInput.files[0];
+					fdata.append("fileUpload", file);
+				}
+			});
+
+			// You can update the jquery selector to use a css class if you want
+			$(".grabThis").each(function (x, y) {
+				fdata.append($(y).attr("name"), $(y).val());
+			});
+			$("input[name='__RequestVerificationToken'").first().each(function (x, y) {
+				fdata.append($(y).attr("name"), $(y).val());
+			});
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("Create", "Transaction", null)",
+				data: fdata,
+				contentType: false,
+				processData: false,
+				success: function (response) {
+					$("#transactionModalBody").load('@Url.Action("_Create", "Transaction", null)');
+					if (response.success) {
+						$.toast({
+							text: response.text, // Text that is to be shown in the toast
+							icon: 'success', // Type of toast icon
+							showHideTransition: 'slide', // fade, slide or plain
+							allowToastClose: true, // Boolean value true or false
+							hideAfter: 3500, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+							stack: false, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+							position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+							textAlign: 'left',  // Text alignment i.e. left, right or center
+							loader: true,  // Whether to show loader or not. True by default
+							loaderBg: '#9EC600',  // Background color of the toast loader
+							beforeShow: function () { }, // will be triggered before the toast is shown
+							afterShown: function () { }, // will be triggered after the toat has been shown
+							beforeHide: function () { }, // will be triggered before the toast gets hidden
+							afterHidden: function () { }  // will be triggered after the toast has been hidden
+						});
+					}
+					else {
+						$.toast({
+							text: response.text, // Text that is to be shown in the toast
+							icon: 'warning', // Type of toast icon
+							showHideTransition: 'slide', // fade, slide or plain
+							allowToastClose: true, // Boolean value true or false
+							hideAfter: 3500, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+							stack: false, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+							position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+							textAlign: 'left',  // Text alignment i.e. left, right or center
+							loader: true,  // Whether to show loader or not. True by default
+							loaderBg: '#d95351',  // Background color of the toast loader
+							beforeShow: function () { }, // will be triggered before the toast is shown
+							afterShown: function () { }, // will be triggered after the toat has been shown
+							beforeHide: function () { }, // will be triggered before the toast gets hidden
+							afterHidden: function () { }  // will be triggered after the toast has been hidden
+						});
+					}
+				}
+			}).done(function (data) {
+				$("#atfArea").load('@Url.Action("_AFTPartial", "Manage", null)');
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>
+<script>
+	$(function () {
+		$("#amount").on('input',function (event) {
+			event.preventDefault(); // Prevent the form from submitting via the browser
+			var title = $("#amount").val();
+			var data = new FormData();
+			data.append("amount", $("#amount").val());
+			data.append("bankAcctId", $("#bankAcctId").val());
+			$("#overdraftStatusArea").empty();
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("OverDraftCheck", "Transaction", null)",
+				data: data,
+				contentType: false,
+				processData: false,
+				success: function (response) {
+					$("#nameStatus").remove();
+					if (response != null && response.overdraft) {
+						$("#overdraftStatusArea").append("<p style='color: red' id='overdraftStatus'>This transaction will overdraft your account.</p>");
+					}
+					else {
+						$("#overdraftStatusArea").append("<p style='color: green' id='overdraftStatus'>This transaction will NOT overdraft your account.</p>");
+					}
+				}
+			});
+			//.done(function (data) {
+			//	$("#nameCheckResult").text("Script done");
+			//}).fail(function (data) {
+			//	$("#nameCheckResult").text("Script fail");
+			//	// Optionally alert the user of an error here...
+			//});
+		});
+	});
+</script>

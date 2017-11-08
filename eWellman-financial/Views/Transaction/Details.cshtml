@@ -1,0 +1,164 @@
+﻿@model eWellman_financial.Models.Class_Models.Transaction
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Transaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.bankAcct.title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.bankAcct.title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.catagory.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.catagory.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.type.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.type.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.amount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.amount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reconciledAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reconciledAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reconciledDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reconciledDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reconciled)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reconciled)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiptUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiptUrl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiptName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiptName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.receiptType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.receiptType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.creatorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.creatorId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.updaterId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.updaterId)
+        </dd>
+
+    </dl>
+</div>
+
+<div class="col-md-2">
+	<a href="@Model.receiptUrl" class="popup-img">
+		<img src="@Model.receiptUrl" class="img-thumbnail img-fluid" title="receipt" />
+	</a>
+</div>
+
+<script>
+	$('.popup-img').magnificPopup({
+		type: 'image',
+		// other options
+		zoom: {
+		enabled: true, // By default it's false, so don't forget to enable it
+
+		duration: 250, // duration of the effect, in milliseconds
+		easing: 'ease-in-out', // CSS transition easing function
+
+		// The "opener" function should return the element from which popup will be zoomed in
+		// and to which popup will be scaled down
+		// By defailt it looks for an image tag:
+		//opener: function (openerElement) {
+		//	// openerElement is the element on which popup was initialized, in this case its <a> tag
+		//	// you don't need to add "opener" option if this code matches your needs, it's defailt one.
+		//	return openerElement.is('img') ? openerElement : openerElement.find('img');
+		//	}
+		}
+	});
+</script>
+
+
+
+
+
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -259,3 +259,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/eWellman-financial/private.config
+/eWellman-financial/private2.config
+/eWellman-financial/Properties/PublishProfiles
+/eWellman-financial/Migrations/Configuration.cs

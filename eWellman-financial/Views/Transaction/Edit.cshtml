@@ -1,0 +1,253 @@
+﻿@model eWellman_financial.Models.Class_Models.Transaction
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm("Edit", "Transaction", FormMethod.Post, new { enctype = "Multipart/form-data" })){
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div class="row">
+			<div class="col-md-6">
+				<h4>Edit Transaction</h4>
+			</div>
+			<div class="col-md-6" style="margin-left:-5em">
+				<label class="custom-control custom-checkbox">
+					@Html.CheckBoxFor(model => model.voided, new { @class = "custom-control-input", id = "voided", name = "voided" })
+					<span class="custom-control-indicator"></span>
+					<span class="custom-control-description" style="color:darkred">Void</span>
+				</label>
+			</div>
+		</div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+       	@Html.HiddenFor(model => model.id)
+		@Html.HiddenFor(model => model.creatorId)
+		@Html.HiddenFor(model => model.updaterId)
+
+        <div class="form-group">
+            <label for="description" class="control-label">Title - Brief Description</label>
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+		<div class="row">
+			<div class="form-group col-lg-2 col-md-4">
+				<label for="amount" class="control-label">Amount</label>
+				<div class="col-md-12">
+					<input type="number" value="@Model.amount" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control grabThis" id="amount" name="amount" />
+					@Html.ValidationMessageFor(model => model.amount, "", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group col-lg-3 col-md-5">
+				@Html.Label("date", "Date", htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					@Html.EditorFor(m => m.date, null, new { htmlAttributes = new { @class = "form-control ", type = "date", @Value = Model.date.ToString("yyyy-MM-dd") } })
+					@Html.ValidationMessage("date", "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="form-group">
+				<div class="col-md-12">
+					<label class="custom-control custom-checkbox">
+						@Html.CheckBoxFor(model => model.reconciled, new { @class = "custom-control-input", id = "reconciled", name = "reconciled" })
+						<span class="custom-control-indicator"></span>
+						<span class="custom-control-description">Reconciled?</span>
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-12">
+					<label class="custom-control custom-checkbox">
+						@Html.CheckBoxFor(model => model.recurring, new { @class = "custom-control-input", id = "recurring", name = "recurring" })
+						<span class="custom-control-indicator"></span>
+						<span class="custom-control-description">Recurring Transaction?</span>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="reconciliationDiv" class="row" style="display:none; margin-left:1px;">
+				<div class="form-group col-lg-5 col-md-6">
+					@Html.Label("reconciledAmount", "New Amount", htmlAttributes: new { @class = "control-label" })
+					@Html.EditorFor(model => model.reconciledAmount, new { htmlAttributes = new { @class = "form-control", style = "margin-left:15px" } })
+					@Html.ValidationMessageFor(model => model.reconciledAmount, "", new { @class = "text-danger" })
+				</div>
+
+				<div class="form-group col-lg-5 col-md-6">
+					@Html.Label("reconciledDate", "Reconciliation Date", htmlAttributes: new { @class = "control-label" })
+					@Html.Editor("reconciledDate", new { htmlAttributes = new { @class = "form-control ", type = "date", @Value = Model.date.ToString("yyyy-MM-dd"), style = "margin-left:15px" } })
+					@Html.ValidationMessage("date", "", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group col-lg-4 col-md-4" style="display:none" id="freqDiv">
+				@Html.Label("frequency", "How often will this transaction occur?", htmlAttributes: new { @class = "control-label" })
+				<div class=" col-lg-6 col-md-8">
+					<select id="frequency" name="frequency" class="form-control ">
+						<!--Gets filled by Ajax-->
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group mt-3">
+			@Html.Label("fileInput", "Select Receipt Image", new { @class = "control-label" })
+			<div class="col-md-10">
+				<label class="custom-file">
+					<input type="file" name="file" id="file" class="custom-file-input">
+					<span id="fileName" class="custom-file-control" data-after="Choose File..."></span>
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="form-group col-lg-3 col-md-4">
+				@Html.Label("bankAcctId", "Bank Account Used", htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<select id="bankAcctId" name="bankAcctId" class="form-control grabThis">
+						<!--Gets filled by Ajax-->
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group col-lg-3 col-md-4">
+				@Html.Label("budgetId", "Budget Effected", htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<select id="budgetId" name="budgetId" class="form-control grabThis">
+						<!--Gets filled by Ajax-->
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="form-group col-lg-3 col-md-4">
+				@Html.Label("transactionCatagoryId", "Transaction Catagory", htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<select id="transactionCatagoryId" name="transactionCatagoryId" class="form-control grabThis">
+						<!--Gets filled by Ajax-->
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group col-lg-3 col-md-4">
+				@Html.Label("transactionTypeId", "Credit or Debit?", htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<select id="transactionTypeId" name="transactionTypeId" class="form-control grabThis">
+						<!--Gets filled by Ajax-->
+					</select>
+				</div>
+			</div>
+		</div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+	$('#file').change(function (e) {
+		var filename = e.target.files[0].name;
+		$("#fileName").attr('data-after', filename);
+		$(this).next(".custom-file-control").attr("data-after", filename.value);
+	});
+</script>
+
+<script>
+	$(function () {
+		$("#voided").change(function (e) {
+			$(".form-group").find(":input:not(:submit)").each(function(){
+				$(this).prop('disabled', function (i, v) { return !v; });
+			});
+			//$("input").find(":submit").prop('disabled', function (i, v) { return !v; });
+			//$('.form-group > div > input').prop('disabled', function (i, v) { return !v; });
+		});
+	});
+</script>
+
+<script>
+	$(function () {
+		$(document).ready(function (event) {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("JsonSelect", "Transaction",null)",
+				dataType: "json",
+				success: function (response) {
+					var accts = response.bankAccount;
+					var cats = response.transactionCatagory;
+					var types = response.transactionType;
+					var budgets = response.budget;
+					var frequencies = response.frequency;
+					$.each(frequencies, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#frequency"));
+						});
+					$.each(accts, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#bankAcctId"));
+					});
+					$.each(cats, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionCatagoryId"));
+					});
+					$.each(types, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionTypeId"))
+					});
+					$.each(budgets, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#budgetId"))
+					});
+				}
+			}).done(function (data) {
+				$("#budgetId option[value='@Model.budgetId']").prop('selected', true);
+				$("#transactionTypeId option[value='@Model.transactionTypeId']").prop('selected', true);
+				$("#transactionCatagoryId option[value='@Model.transactionCatagoryId']").prop('selected', true);
+				$("#bankAcctId option[value='@Model.bankAcctId']").prop('selected', true);
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>
+@if (Model.frequency.HasValue) {
+	<script>
+		$("#bankAcctId option[value='@Model.bankAcctId']").prop('selected', true);
+	</script>
+}
+<script>
+	$(function () {
+		$("#recurring").change(function (e) {
+			$("#freqDiv").toggle();
+		});
+		$("#reconciled").change(function (e) {
+			$("#reconciliationDiv").toggle();
+		});
+	});
+</script>
+@if (Model.recurring) {
+	<script>
+		$(function () {
+			$(document).ready(function (event) {
+				$("#freqDiv").show();
+			});
+		});
+	</script>
+}
+@if (Model.reconciled) {
+	<script>
+		$(function () {
+			$(document).ready(function (event) {
+				$("#reconciliationDiv").show();
+			});
+		});
+	</script>
+}

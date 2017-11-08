@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using eWellman_financial.Models;
+using eWellman_financial.Models.Class_Models;
 
 namespace eWellman_financial
 {

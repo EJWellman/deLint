@@ -1,0 +1,63 @@
+﻿@model IEnumerable<eWellman_financial.Models.Class_Models.Budget>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.duration.name)
+        </th>
+        <th>
+            Duration
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.totalIncome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.totalExpense)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.difference)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.duration.name)
+        </td>
+        <td>
+            @item.duration.name
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.totalIncome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.totalExpense)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.difference)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

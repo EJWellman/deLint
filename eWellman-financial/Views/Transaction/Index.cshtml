@@ -1,0 +1,111 @@
+﻿@model IEnumerable<eWellman_financial.Models.Class_Models.Transaction>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.bankAcct.title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.catagory.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.type.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.reconciledAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.reconciledDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.reconciled)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.receiptUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.receiptName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.receiptType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.creatorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.updaterId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.bankAcct.title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.catagory.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.type.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reconciledAmount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reconciledDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reconciled)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.receiptUrl)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.receiptName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.receiptType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.creatorId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.updaterId)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>
