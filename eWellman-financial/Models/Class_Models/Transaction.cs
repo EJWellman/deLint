@@ -23,15 +23,15 @@ namespace eWellman_financial.Models.Class_Models {
 		public string updaterId { get; set; }
 		public int? budgetId { get; set; }
 		public int bankAcctId { get; set; }
-		public int? transactionCatagoryId { get; set; }
 		public int transactionTypeId { get; set; }
+		//public int? transactionCatagoryId { get; set; }
 
 		//Virtuals
 		public virtual Budget budget { get; set; }
 		public virtual ApplicationUser creator { get; set; }
 		public virtual ApplicationUser updater { get; set; }
 		public virtual BankAcct bankAcct { get; set; }
-		public virtual TransactionCatagory catagory {get;set;}
 		public virtual TransactionType type { get; set; }
+		//public virtual TransactionCatagory catagory {get;set;}
 	}
 }

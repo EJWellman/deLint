@@ -2,10 +2,10 @@
 
 @{
     ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Edit</h2>
-
 
 @using (Html.BeginForm())
 {
@@ -17,53 +17,51 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.title, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
-            </div>
-        </div>
+		<div class="row">
+			<div class="form-group col-md-5">
+				@Html.LabelFor(model => model.title, htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					@Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
+				</div>
+			</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.totalIncome, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.totalIncome, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.totalIncome, "", new { @class = "text-danger" })
-            </div>
-        </div>
+			<div class="form-group col-md-3">
+				@Html.LabelFor(model => model.durationId, null, htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<select class="form-control" id="durationId" name="durationId"></select>
+					@Html.ValidationMessageFor(model => model.durationId, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.totalExpense, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.totalExpense, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.totalExpense, "", new { @class = "text-danger" })
-            </div>
-        </div>
+		<div class="row">
+			@*<div class="form-group col-lg-3 col-md-3">
+				@Html.LabelFor(model => model.goalIncome, htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<div class="input-group">
+						<div class="input-group-addon">&#36;</div>
+						<input type="number" value="@Model.goalIncome" min="0" step="0.01"
+							   data-number-to-fixed="2" data-number-stepfactor="100"
+							   class="form-control" id="goalIncome" name="goalIncome" />
+					</div>
+					@Html.ValidationMessageFor(model => model.goalIncome, "", new { @class = "text-danger" })
+				</div>
+			</div>*@
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.difference, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.difference, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.difference, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.durationId, "durationId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("durationId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.durationId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.householdId, "householdId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("householdId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.householdId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+			<div class="form-group col-lg-3 col-md-3">
+				@Html.LabelFor(model => model.goalExpense, htmlAttributes: new { @class = "control-label" })
+				<div class="col-md-12">
+					<div class="input-group">
+						<div class="input-group-addon">&#36;</div>
+						<input type="number" value="@Model.goalExpense" min="0" step="0.01"
+							   data-number-to-fixed="2" data-number-stepfactor="100"
+							   class="form-control" id="goalExpense" name="goalExpense" />
+					</div>
+					@Html.ValidationMessageFor(model => model.goalExpense, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -73,10 +71,24 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+<script>
+	$(function () {
+		$(document).ready(function (event) {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("JsonSelect", "Budget",null)",
+				dataType: "json",
+				success: function (response) {
+					var frequencies = response.frequencies;
+					$.each(frequencies, function (id, info) {
+						$("<option>").val(info.Value).text(info.Text).appendTo($("#durationId"))
+					});
+				}
+			}).done(function (data) {
+				$("#durationId option[value='@Model.durationId']").prop('selected', true);
+				// Optionally alert the user of success here...
+			}).fail(function (data) {
+			});
+		});
+	});
+</script>

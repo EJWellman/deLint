@@ -2,26 +2,22 @@
 
 @{
     ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<h2>Details</h2>
 
 <div>
     <h4>@Model.title</h4>
+    <hr />
     <dl class="dl-horizontal">
         <dt>
             Frequency
-		</dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.duration.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.household.title)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.household.title)
-        </dd>
+			@Model.duration.name
+		</dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.title)
@@ -30,38 +26,22 @@
         <dd>
             @Html.DisplayFor(model => model.title)
         </dd>
-
         <dt>
-            @Html.DisplayNameFor(model => model.totalIncome)
-        </dt>
-
-		<dd>
-			@Model.totalIncome
-		</dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.totalExpense)
-        </dt>
-
-		<dd>
-			@Model.totalExpense
-		</dd>
-
-        <dt>
-			Remaining
+            @Html.DisplayNameFor(model => model.goalExpense)
         </dt>
 
         <dd>
-            @Model.difference
+            @Model.goalExpense
         </dd>
-    </dl>
-	@*@foreach (var income in Model.incomes) {
-		<p>@income.title - @income.amount</p>
-	}
-	@foreach (var expense in Model.expenses) {
-		<p>@expense.title - @expense.amount</p>
-	}*@
+		<dt>
+			@Html.DisplayNameFor(model => model.actualExpense)
+		</dt>
 
+		<dd>
+			@Model.actualExpense
+		</dd>
+
+    </dl>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |

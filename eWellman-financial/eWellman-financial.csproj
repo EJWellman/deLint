@@ -196,10 +196,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BankAcctsController.cs" />
     <Compile Include="Controllers\BudgetController.cs" />
-    <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HouseholdController.cs" />
-    <Compile Include="Controllers\IncomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Global.asax.cs">
@@ -218,6 +216,7 @@
     <Compile Include="Models\Helpers\Extensions.cs" />
     <Compile Include="Models\View_Models\AccountViewModels.cs" />
     <Compile Include="Models\Class_Models\IdentityModels.cs" />
+    <Compile Include="Models\View_Models\FrequencyListViewModel.cs" />
     <Compile Include="Models\View_Models\ManageViewModels.cs" />
     <Compile Include="Models\View_Models\TransactionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -336,11 +335,6 @@
     <Content Include="Views\Household\Details.cshtml" />
     <Content Include="Views\Household\Edit.cshtml" />
     <Content Include="Views\Household\Index.cshtml" />
-    <Content Include="Views\Budget\Create.cshtml" />
-    <Content Include="Views\Budget\Delete.cshtml" />
-    <Content Include="Views\Budget\Details.cshtml" />
-    <Content Include="Views\Budget\Edit.cshtml" />
-    <Content Include="Views\Budget\Index.cshtml" />
     <Content Include="Views\Transaction\Create.cshtml" />
     <Content Include="Views\Transaction\Delete.cshtml" />
     <Content Include="Views\Transaction\Details.cshtml" />
@@ -366,13 +360,11 @@
     <Content Include="Views\BankAccts\Edit.cshtml" />
     <Content Include="Views\BankAccts\Index.cshtml" />
     <Content Include="Views\Manage\_AFTPartial.cshtml" />
-    <Content Include="Views\Income\Create.cshtml" />
-    <Content Include="Views\Income\Delete.cshtml" />
-    <Content Include="Views\Income\Details.cshtml" />
-    <Content Include="Views\Income\Edit.cshtml" />
-    <Content Include="Views\Income\Index.cshtml" />
-    <Content Include="Views\Income\_Create.cshtml" />
-    <Content Include="Views\Expenses\_Create.cshtml" />
+    <Content Include="Views\Budget\Create.cshtml" />
+    <Content Include="Views\Budget\Delete.cshtml" />
+    <Content Include="Views\Budget\Details.cshtml" />
+    <Content Include="Views\Budget\Edit.cshtml" />
+    <Content Include="Views\Budget\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

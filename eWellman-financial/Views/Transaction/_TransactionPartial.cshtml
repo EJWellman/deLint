@@ -7,7 +7,7 @@
 		<div class="form-group">
 			@Html.Label("description", "Title - Brief Description", htmlAttributes: new { @class = "control-label" })
 			<div class="col-md-11">
-				@Html.Editor("description", null, new { htmlAttributes = new { @class = "form-control grabThis", @type = "text" } })
+				@Html.Editor("description2", null, new { htmlAttributes = new { @class = "form-control transCreate", @type = "text" } })
 				@Html.ValidationMessage("description", "", new { @class = "text-danger" })
 			</div>
 		</div>
@@ -16,12 +16,12 @@
 			@Html.Label("amount", "Amount", htmlAttributes: new { @class = "control-label col-md-2", style = "margin-left:-15px;" })
 				<div class="input-group" style="margin-left:15px;">
 					<span class="input-group-addon">$</span>
-					<input type="number" value="0.00" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control grabThis" id="amount" name="amount" />
+					<input type="number" onchange="setTwoNumberDecimal(this)" value="0.00" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control transCreate" id="amount2" name="amount2" />
 				</div>
 			</div>
 			<div class="col-md-5">
 				@Html.Label("date", "Date", htmlAttributes: new { @class = "control-label", style = "margin-left:15px;" })
-				@Html.Editor("date", new { htmlAttributes = new { @class = "form-control grabThis", type = "date", style = "margin-left:30px;" } })
+				@Html.Editor("date2", new { htmlAttributes = new { @class = "form-control transCreate", type = "date", style = "margin-left:30px;" } })
 				@Html.ValidationMessage("date", "", new { @class = "text-danger" })
 			</div>
 		</div>
@@ -40,7 +40,7 @@
 				<div class="form-group">
 					<div class="col-md-12">
 						<label class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input grabThis" id="recurring2" name="recurring2">
+							<input type="checkbox" class="custom-control-input transCreate" id="recurring2" name="recurring2">
 							<span class="custom-control-indicator"></span>
 							<span class="custom-control-description">Recurring Transaction?</span>
 						</label>
@@ -50,7 +50,7 @@
 				<div class="form-group" style="display:none" id="freqDiv2">
 					@Html.Label("frequency", "How often will this transaction occur?", htmlAttributes: new { @class = "control-label" })
 					<div class="col-md-12">
-						<select id="frequency2" name="frequency2" class="form-control grabThis">
+						<select id="frequency2" name="frequency2" class="form-control transCreate">
 							<!--Gets filled by Ajax-->
 						</select>
 					</div>
@@ -59,7 +59,7 @@
 				<div class="form-group">
 					@Html.Label("bankAcctId", "Bank Account Used", htmlAttributes: new { @class = "control-label" })
 					<div class="col-md-12">
-						<select id="bankAcctId2" name="bankAcctId2" class="form-control grabThis">
+						<select id="bankAcctId2" name="bankAcctId2" class="form-control transCreate">
 							<!--Gets filled by Ajax-->
 						</select>
 					</div>
@@ -68,25 +68,25 @@
 				<div class="form-group">
 					@Html.Label("budgetId", "Budget Effected", htmlAttributes: new { @class = "control-label" })
 					<div class="col-md-12">
-						<select id="budgetId2" name="budgetId2" class="form-control grabThis">
+						<select id="budgetId2" name="budgetId2" class="form-control transCreate">
 							<!--Gets filled by Ajax-->
 						</select>
 					</div>
 				</div>
 
-				<div class="form-group">
+				<!--<div class="form-group">
 					@Html.Label("transactionCatagoryId", "Transaction Catagory", htmlAttributes: new { @class = "control-label" })
 					<div class="col-md-12">
-						<select id="transactionCatagoryId2" name="transactionCatagoryId2" class="form-control grabThis">
-							<!--Gets filled by Ajax-->
+						<select id="transactionCatagoryId2" name="transactionCatagoryId2" class="form-control transCreate">
+							<!--Gets filled by Ajax
 						</select>
 					</div>
-				</div>
+				</div>-->
 
 				<div class="form-group">
 					@Html.Label("transactionTypeId", "Credit or Debit?", htmlAttributes: new { @class = "control-label" })
 					<div class="col-md-12">
-						<select id="transactionTypeId2" name="transactionTypeId2" class="form-control grabThis">
+						<select id="transactionTypeId2" name="transactionTypeId2" class="form-control transCreate">
 							<!--Gets filled by Ajax-->
 						</select>
 					</div>
@@ -105,7 +105,11 @@
 	</div>
 }
 
-
+<script>
+	function setTwoNumberDecimal(el) {
+		el.value = parseFloat(el.value).toFixed(2);
+	};
+</script>
 <script>
 	$(function () {
 		$(document).ready(function (event) {
@@ -115,7 +119,7 @@
 				dataType: "json",
 				success: function (response) {
 					var accts = response.bankAccount;
-					var cats = response.transactionCatagory;
+					//var cats = response.transactionCatagory;
 					var types = response.transactionType;
 					var budgets = response.budget;
 					var frequencies = response.frequency;
@@ -125,9 +129,9 @@
 					$.each(accts, function (id, info) {
 						$("<option>").val(info.Value).text(info.Text).appendTo($("#bankAcctId2"))
 					});
-					$.each(cats, function (id, info) {
-						$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionCatagoryId2"))
-					});
+					//$.each(cats, function (id, info) {
+					//	$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionCatagoryId2"))
+					//});
 					$.each(types, function (id, info) {
 						$("<option>").val(info.Value).text(info.Text).appendTo($("#transactionTypeId2"))
 					});
@@ -165,7 +169,7 @@
 			});
 
 			// You can update the jquery selector to use a css class if you want
-			$(".grabThis").each(function (x, y) {
+			$(".transCreate").each(function (x, y) {
 				fdata.append($(y).attr("name"), $(y).val());
 			});
 			$("input[name='__RequestVerificationToken'").first().each(function (x, y) {
@@ -178,7 +182,8 @@
 				contentType: false,
 				processData: false,
 				success: function (response) {
-					$("#transactionModalBody").load('@Url.Action("_Create", "Transaction", null)');
+					$("#transactionModalBody").load('@Url.Action("_TransactionPartial", "Transaction", null)' + '#transactionModalBody>*','');
+					$("#transactionModal").modal('hide');
 					if (response.success) {
 						$.toast({
 							text: response.text, // Text that is to be shown in the toast
@@ -226,12 +231,12 @@
 </script>
 <script>
 	$(function () {
-		$("#amount").on('input',function (event) {
+		$("#amount2").on('input',function (event) {
 			event.preventDefault(); // Prevent the form from submitting via the browser
-			var title = $("#amount").val();
+			var title = $("#amount2").val();
 			var data = new FormData();
-			data.append("amount", $("#amount").val());
-			data.append("bankAcctId", $("#bankAcctId").val());
+			data.append("amount", $("#amount2").val());
+			data.append("bankAcctId", $("#bankAcctId2").val());
 			$("#overdraftStatusArea").empty();
 			$.ajax({
 				type: "POST",

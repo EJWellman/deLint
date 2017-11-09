@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using eWellman_financial.Models.Class_Models;
 using eWellman_financial.Models.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace eWellman_financial.Controllers
 {
@@ -49,15 +50,40 @@ namespace eWellman_financial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "title,balance")] BankAcct bankAcct){
-            if (ModelState.IsValid){
-				bankAcct.added = DateTimeOffset.UtcNow;
-				bankAcct.householdId = (int)User.Identity.GetHouseholdId();
-                db.BankAccts.Add(bankAcct);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(bankAcct);
+        public ActionResult Create(string title, decimal balance) {
+			//[Bind(Include = "title,balance")] BankAcct bankAcct){
+			if (title != "" || title != null) {
+				BankAcct bankAcct = new BankAcct() {
+					title = title,
+					householdId = User.Identity.GetHouseId(),
+					added = DateTimeOffset.UtcNow
+				};
+				db.BankAccts.Add(bankAcct);
+				db.SaveChanges();
+				Transaction transaction = new Transaction() {
+					description = "Account Seed",
+					amount = balance,
+					bankAcctId = bankAcct.id,
+					creatorId = User.Identity.GetUserId(),
+					date = DateTimeOffset.UtcNow,
+					transactionTypeId = 2
+				};
+				db.Transactions.Add(transaction);
+				db.SaveChanges();
+				return RedirectToAction("Details", new { id = bankAcct.id });
+			}
+		return View();
+
+
+
+			//if (ModelState.IsValid){
+				//bankAcct.added = DateTimeOffset.UtcNow;
+				//bankAcct.householdId = (int)User.Identity.GetHouseholdId();
+				//db.BankAccts.Add(bankAcct);
+				//db.SaveChanges();
+				//return RedirectToAction("Index");
+			//}
+            //return View(bankAcct);
         }
 
         // GET: BankAccts/Edit/5

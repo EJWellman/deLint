@@ -24,6 +24,9 @@
        	@Html.HiddenFor(model => model.id)
 		@Html.HiddenFor(model => model.creatorId)
 		@Html.HiddenFor(model => model.updaterId)
+		@Html.HiddenFor(m => m.receiptUrl)
+		@Html.HiddenFor(m => m.receiptType)
+		@Html.HiddenFor(m => m.receiptName)
 
         <div class="form-group">
             <label for="description" class="control-label">Title - Brief Description</label>
@@ -211,7 +214,7 @@
 			}).done(function (data) {
 				$("#budgetId option[value='@Model.budgetId']").prop('selected', true);
 				$("#transactionTypeId option[value='@Model.transactionTypeId']").prop('selected', true);
-				$("#transactionCatagoryId option[value='@Model.transactionCatagoryId']").prop('selected', true);
+				//$("#transactionCatagoryId option[value='@Model.transactionCatagoryId']").prop('selected', true);
 				$("#bankAcctId option[value='@Model.bankAcctId']").prop('selected', true);
 			}).fail(function (data) {
 			});

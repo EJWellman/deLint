@@ -20,7 +20,7 @@ namespace eWellman_financial.Controllers {
 		//GET: Transaction
 		public ActionResult Index()
 		{
-			var transactions = db.Transactions.Include(t => t.bankAcct).Include(t => t.catagory).Include(t => t.type);
+			var transactions = db.Transactions.Include(t => t.bankAcct).Include(t => t.type);
 			return View(transactions.ToList());
 		}
 
@@ -50,7 +50,9 @@ namespace eWellman_financial.Controllers {
 		//more details see https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Create(string blah) {
+		public ActionResult Create([Bind(Include = "id,description,amount,reconciledAmount,date,reconciledDate," +
+			"recurring,creatorId,updaterId,bankAcctId," +
+			"transactionTypeId,voided")] Transaction transaction, HttpPostedFileBase fileInput2) {
 			if (Request.Form.Count >= 8) {
 				ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
 				Household house = db.Households.Find(user.householdId);
@@ -61,8 +63,8 @@ namespace eWellman_financial.Controllers {
 					frequency = int.Parse(Request.Form[4]),
 					bankAcctId = int.Parse(Request.Form[5]),
 					budgetId = int.Parse(Request.Form[6]),
-					transactionCatagoryId = int.Parse(Request.Form[7]),
-					transactionTypeId = int.Parse(Request.Form[8]),
+					//transactionCatagoryId = int.Parse(Request.Form[7]),
+					transactionTypeId = int.Parse(Request.Form[7]),
 					creatorId = user.Id
 				};
 				if (Request.Form[3] == "on") {
@@ -134,8 +136,9 @@ namespace eWellman_financial.Controllers {
 		//more details see https://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Edit([Bind(Include = "id,description,amount,reconciledAmount,date,reconciledDate,recurring,reconciled,receiptUrl,receiptName,receiptType,creatorId,updaterId,bankAcctId,transactionCatagoryId,transactionTypeId,voided")] Transaction transaction, HttpPostedFileBase file)
-		{
+		public ActionResult Edit([Bind(Include = "id,description,amount,reconciledAmount,date,reconciledDate," +
+			"recurring,reconciled,receiptUrl,receiptName,receiptType,creatorId,updaterId,bankAcctId," +
+			"transactionTypeId,voided")] Transaction transaction, HttpPostedFileBase file){
 			if (transaction.voided) {
 				var dbTrans = db.Transactions.Find(transaction.id);
 				dbTrans.voided = transaction.voided;
